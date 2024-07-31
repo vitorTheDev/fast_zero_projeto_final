@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.taskipy.tasks]
 lint = 'ruff check . && ruff check . --diff'
 format = 'ruff check . --fix && ruff format .'
-run = 'fastapi dev _projeto_final/app.py'
+run = 'fastapi dev fast_zero_projeto_final/app.py'
 pre_test = 'task lint'
 test = 'pytest -s -x --cov=fast_zero_projeto_final -vv'
 post_test = 'coverage html'
@@ -20,6 +20,8 @@ docker_migrations = 'docker exec -it fastzeroapp poetry run alembic upgrade head
 docker_stop = 'docker stop fastzeroapp'
 compose_up = 'docker-compose up'
 compose_down = 'docker-compose down'
+postgres_up = 'docker-compose up fast_zero_projeto_final_db'
+postgres_down = 'docker-compose down fast_zero_projeto_final_db'
 deploy = 'fly deploy --local-only --ha=false'
 
 

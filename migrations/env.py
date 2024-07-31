@@ -5,20 +5,17 @@ from sqlalchemy import pool
 
 from alembic import context
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
-config = context.config
+from fast_zero_projeto_final.models.registry import table_registry
+from fast_zero_projeto_final.models import contas, romancistas, livros
+from fast_zero_projeto_final.settings import Settings
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
+config = context.config
+config.set_main_option('sqlalchemy.url', Settings().DATABASE_URL)
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = table_registry.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
