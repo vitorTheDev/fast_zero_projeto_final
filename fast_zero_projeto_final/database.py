@@ -1,6 +1,7 @@
-from fast_zero.settings import Settings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+
+from fast_zero_projeto_final.settings import Settings
 
 engine = create_engine(Settings().DATABASE_URL)
 

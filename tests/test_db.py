@@ -12,10 +12,11 @@ def test_get_session():
 
 
 def test_create_conta(session):
-    new_conta = Conta(username='alice', password='secret', email='teste@test')
+    new_conta = Conta(username='alice', senha='secret', email='teste@test')
     session.add(new_conta)
     session.commit()
 
     conta = session.scalar(select(Conta).where(Conta.username == 'alice'))
 
     assert conta.username == 'alice'
+    assert conta.email == 'teste@test'

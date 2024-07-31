@@ -46,28 +46,28 @@ def client(session):
 
 @pytest.fixture
 def user(session):
-    password = 'testtest'
-    user = ContaFactory(password=get_password_hash(password))
+    senha = 'testtest'
+    user = ContaFactory(senha=get_password_hash(senha))
 
     session.add(user)
     session.commit()
     session.refresh(user)
 
-    user.clean_password = 'testtest'
+    user.senha_limpa = 'testtest'
 
     return user
 
 
 @pytest.fixture
 def other_user(session):
-    password = 'testtest'
-    user = ContaFactory(password=get_password_hash(password))
+    senha = 'testtest'
+    user = ContaFactory(senha=get_password_hash(senha))
 
     session.add(user)
     session.commit()
     session.refresh(user)
 
-    user.clean_password = 'testtest'
+    user.senha_limpa = 'testtest'
 
     return user
 
@@ -76,7 +76,7 @@ def other_user(session):
 def token(client, user):
     response = client.post(
         '/auth/token',
-        data={'username': user.email, 'password': user.clean_password},
+        data={'username': user.email, 'senha': user.senha_limpa},
     )
     token = response.json()['access_token']
     client.headers.update({'Authorization': f'Bearer {token}'})

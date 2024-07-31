@@ -1,8 +1,6 @@
-from http import HTTPStatus
-
 from jwt import decode
 
-from fast_zero.security import create_access_token, settings
+from fast_zero_projeto_final.security import create_access_token, settings
 
 
 def test_jwt():
@@ -15,5 +13,3 @@ def test_jwt():
 
     assert decoded['test'] == data['test']
     assert decoded['exp']  # Testa se o valor de exp foi adicionado ao token
-
-
