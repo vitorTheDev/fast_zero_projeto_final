@@ -24,7 +24,7 @@ services:
     depends_on:
       - fast_zero_projeto_final_db
     environment:
-      DATABASE_URL: postgresql+psycopg://app_user:app_password@fast_zero_projeto_final_db:5432/app_db
+      DATABASE_URL: postgresql+psycopg://app_user:app_password@fast_zero_projeto_final_db:5432/fast_zero_projeto_final_db
 
 volumes:
   pgdata:
