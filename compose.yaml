@@ -1,0 +1,30 @@
+services:
+  fast_zero_projeto_final_db:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  fast_zero_projeto_final_app:
+    image: fast_zero_projeto_final_app
+    entrypoint: ./entrypoint.sh
+    env_file:
+      - .env
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - fast_zero_projeto_final_db
+    environment:
+      DATABASE_URL: postgresql+psycopg://app_user:app_password@fast_zero_projeto_final_db:5432/app_db
+
+volumes:
+  pgdata:
