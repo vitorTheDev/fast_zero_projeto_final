@@ -1,8 +1,8 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class ContaSchema(BaseModel):
-    username: str
+    username: str = Field(pattern=r'^[a-zA-Z][a-zA-Z0-9_]+')
     email: EmailStr
     senha: str
 
