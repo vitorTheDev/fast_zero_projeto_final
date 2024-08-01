@@ -9,6 +9,7 @@ from fast_zero_projeto_final.database import get_session
 from fast_zero_projeto_final.models.contas import Conta
 from fast_zero_projeto_final.models.romancistas import Romancista
 from fast_zero_projeto_final.sanitize import sanitize_nome
+from fast_zero_projeto_final.schemas.mensagem import Mensagem
 from fast_zero_projeto_final.schemas.romancistas import (
     RomancistaList,
     RomancistaPublic,
@@ -89,3 +90,23 @@ def patch_romancista(
     session.refresh(db_romancista)
 
     return db_romancista
+
+
+@router.delete('/{romancista_id}', response_model=Mensagem)
+def delete_romancista(romancista_id: int, session: Session, conta: ContaAtual):
+    romancista = session.scalar(
+        select(Romancista).where(
+            Romancista.conta_id == conta.id, Romancista.id == romancista_id
+        )
+    )
+
+    if not romancista:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Romancista não consta no MADR',
+        )
+
+    session.delete(romancista)
+    session.commit()
+
+    return {'message': 'Livro deletado no MADR'}

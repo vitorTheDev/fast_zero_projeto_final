@@ -110,3 +110,21 @@ def test_patch_romancista(client, token, romancista):
     )
     assert response.status_code == HTTPStatus.OK
     assert response.json()['nome'] == 'teste romancista'
+
+
+def test_delete_romancista(client, romancista, token):
+    response = client.delete(
+        f'/romancistas/{romancista.id}',
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'message': 'Livro deletado no MADR'}
+
+
+def test_delete_romancista_not_found(client, token):
+    response = client.delete(
+        f'/romancistas/{10}', headers={'Authorization': f'Bearer {token}'}
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Romancista não consta no MADR'}
