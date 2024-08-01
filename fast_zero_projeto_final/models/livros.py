@@ -13,4 +13,4 @@ class Livro:
     ano: Mapped[int]
 
     romancista_id: Mapped[int] = mapped_column(ForeignKey('romancistas.id'))
-    user_id: Mapped[int] = mapped_column(ForeignKey('contas.id'))
+    conta_id: Mapped[int] = mapped_column(ForeignKey('contas.id'))

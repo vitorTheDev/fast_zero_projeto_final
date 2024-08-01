@@ -38,7 +38,7 @@ def test_list_romancistas_should_return_5_romancistas(
 ):
     expected_romancistas = 5
     session.bulk_save_objects(
-        RomancistaFactory.create_batch(5, user_id=user.id)
+        RomancistaFactory.create_batch(5, conta_id=user.id)
     )
     session.commit()
 
@@ -54,11 +54,11 @@ def test_list_romancistas_filter_nome_should_return_5_romancistas(
 ):
     expected_romancistas = 5
     session.bulk_save_objects(
-        RomancistaFactory.create_batch(5, user_id=user.id, nome='Blablabla')
+        RomancistaFactory.create_batch(5, conta_id=user.id, nome='Blablabla')
     )
     session.bulk_save_objects(
         RomancistaFactory.create_batch(
-            5, user_id=user.id, nome='test romancista 1'
+            5, conta_id=user.id, nome='test romancista 1'
         )
     )
     session.commit()
@@ -77,6 +77,18 @@ def test_list_romancistas_other_user_data_should_return_0(
 
     response = client.get(
         '/romancistas/',
+    )
+
+    assert len(response.json()['romancistas']) == expected_romancistas
+
+
+def test_list_romancistas_filtered_other_user_data_should_return_0(
+    session, client, other_romancista, token
+):
+    expected_romancistas = 0
+
+    response = client.get(
+        f'/romancistas/?nome={other_romancista.nome}',
     )
 
     assert len(response.json()['romancistas']) == expected_romancistas

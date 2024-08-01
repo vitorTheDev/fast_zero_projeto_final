@@ -22,7 +22,7 @@ class RomancistaFactory(factory.Factory):
         model = Romancista
 
     nome = factory.Faker('name')
-    user_id = 1
+    conta_id = 1
 
     @factory.post_generation
     def sanitize_nome(obj, create, extracted, **kwargs):
@@ -39,7 +39,7 @@ class LivroFactory(factory.Factory):
     titulo = factory.Faker('sentence', nb_words=4)
     ano = 1950 + random.randint(0, 75)
     romancista_id = 1
-    user_id = 1
+    conta_id = 1
 
     @factory.post_generation
     def sanitize_titulo(obj, create, extracted, **kwargs):

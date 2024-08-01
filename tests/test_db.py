@@ -25,12 +25,12 @@ def test_create_conta(session):
 
 
 def test_create_romancista(session, user):
-    new_romancista = Romancista(nome='Clarice Lispector', user_id=user.id)
+    new_romancista = Romancista(nome='Clarice Lispector', conta_id=user.id)
     session.add(new_romancista)
     session.commit()
 
     romancista = session.scalar(
-        select(Romancista).where(Romancista.user_id == user.id)
+        select(Romancista).where(Romancista.conta_id == user.id)
     )
 
     assert romancista.nome == 'Clarice Lispector'
@@ -41,14 +41,14 @@ def test_create_livro(session, user, romancista: Romancista):
         titulo='o hobbit',
         ano=1937,
         romancista_id=romancista.id,
-        user_id=user.id,
+        conta_id=user.id,
     )
     session.add(new_livro)
     session.commit()
 
-    livro = session.scalar(select(Livro).where(Livro.user_id == user.id))
+    livro = session.scalar(select(Livro).where(Livro.conta_id == user.id))
 
     assert livro.titulo == 'o hobbit'
     assert livro.ano == 1937  # noqa
     assert livro.romancista_id == romancista.id
-    assert livro.user_id == user.id
+    assert livro.conta_id == user.id

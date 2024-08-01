@@ -12,7 +12,7 @@ class Romancista:
     id: Mapped[int] = mapped_column(init=False, primary_key=True)
     nome: Mapped[str]
 
-    user_id: Mapped[int] = mapped_column(ForeignKey('contas.id'))
+    conta_id: Mapped[int] = mapped_column(ForeignKey('contas.id'))
 
     livros: Mapped[list['Livro']] = relationship(
         init=False, cascade='all, delete-orphan'

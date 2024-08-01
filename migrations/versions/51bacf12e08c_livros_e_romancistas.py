@@ -23,8 +23,8 @@ def upgrade() -> None:
     op.create_table('romancistas',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('nome', sa.String(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['contas.id'], ),
+    sa.Column('conta_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['conta_id'], ['contas.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('livros',
@@ -32,9 +32,9 @@ def upgrade() -> None:
     sa.Column('titulo', sa.String(), nullable=False),
     sa.Column('ano', sa.Integer(), nullable=False),
     sa.Column('romancista_id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('conta_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['romancista_id'], ['romancistas.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['contas.id'], ),
+    sa.ForeignKeyConstraint(['conta_id'], ['contas.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
