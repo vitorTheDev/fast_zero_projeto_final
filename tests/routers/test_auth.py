@@ -56,7 +56,7 @@ def test_token_expired_after_time(client, user):
             },
         )
         assert response.status_code == HTTPStatus.UNAUTHORIZED
-        assert response.json() == {'detail': 'Credenciais inválidas'}
+        assert response.json() == {'detail': 'Não autorizado'}
 
 
 def test_refresh_token(client, user, token):
@@ -65,7 +65,6 @@ def test_refresh_token(client, user, token):
     )
 
     data = response.json()
-    print(data)
 
     assert response.status_code == HTTPStatus.OK
     assert 'access_token' in data
@@ -89,4 +88,4 @@ def test_token_expired_dont_refresh(client, user):
             headers={'Authorization': f'Bearer {token}'},
         )
         assert response.status_code == HTTPStatus.UNAUTHORIZED
-        assert response.json() == {'detail': 'Credenciais inválidas'}
+        assert response.json() == {'detail': 'Não autorizado'}

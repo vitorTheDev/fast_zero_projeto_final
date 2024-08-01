@@ -46,7 +46,7 @@ def get_conta_atual(
 ):
     credentials_exception = HTTPException(
         status_code=HTTPStatus.UNAUTHORIZED,
-        detail='Credenciais inválidas',
+        detail='Não autorizado',
         headers={'WWW-Authenticate': 'Bearer'},
     )
 

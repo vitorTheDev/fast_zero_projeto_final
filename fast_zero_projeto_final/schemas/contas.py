@@ -7,7 +7,7 @@ class ContaSchema(BaseModel):
     senha: str
 
 
-class ContaPublico(BaseModel):
+class ContaPublic(BaseModel):
     id: int
     username: str
     email: EmailStr
@@ -15,4 +15,4 @@ class ContaPublico(BaseModel):
 
 
 class ContaLista(BaseModel):
-    contas: list[ContaPublico]
+    contas: list[ContaPublic]

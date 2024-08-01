@@ -23,7 +23,7 @@ def test_jwt_invalid_token(client):
     )
 
     assert response.status_code == HTTPStatus.UNAUTHORIZED
-    assert response.json() == {'detail': 'Credenciais inválidas'}
+    assert response.json() == {'detail': 'Não autorizado'}
 
 
 def test_jwt_empty_payload(client):
@@ -34,7 +34,7 @@ def test_jwt_empty_payload(client):
     )
 
     assert response.status_code == HTTPStatus.UNAUTHORIZED
-    assert response.json() == {'detail': 'Credenciais inválidas'}
+    assert response.json() == {'detail': 'Não autorizado'}
 
 
 def test_jwt_user_not_found(client):
@@ -45,4 +45,4 @@ def test_jwt_user_not_found(client):
     )
 
     assert response.status_code == HTTPStatus.UNAUTHORIZED
-    assert response.json() == {'detail': 'Credenciais inválidas'}
+    assert response.json() == {'detail': 'Não autorizado'}

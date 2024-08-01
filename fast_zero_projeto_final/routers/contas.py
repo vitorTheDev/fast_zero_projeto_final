@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from fast_zero_projeto_final.database import get_session
 from fast_zero_projeto_final.models.contas import Conta
 from fast_zero_projeto_final.schemas.contas import (
-    ContaPublico,
+    ContaPublic,
     ContaSchema,
 )
 from fast_zero_projeto_final.schemas.mensagem import Mensagem
@@ -23,7 +23,7 @@ Session = Annotated[Session, Depends(get_session)]
 CurrentConta = Annotated[Conta, Depends(get_conta_atual)]
 
 
-@router.post('/', status_code=HTTPStatus.CREATED, response_model=ContaPublico)
+@router.post('/', status_code=HTTPStatus.CREATED, response_model=ContaPublic)
 def create_conta(conta: ContaSchema, session: Session):
     conta_existente = session.scalar(
         select(Conta).where(
@@ -55,7 +55,7 @@ def create_conta(conta: ContaSchema, session: Session):
     return conta_existente
 
 
-@router.put('/{conta_id}', response_model=ContaPublico)
+@router.put('/{conta_id}', response_model=ContaPublic)
 def update_conta(
     conta_id: int,
     conta: ContaSchema,
@@ -90,4 +90,4 @@ def delete_conta(
     session.delete(current_conta)
     session.commit()
 
-    return {'message': 'Conta excluída'}
+    return {'message': 'Conta deletada com sucesso'}

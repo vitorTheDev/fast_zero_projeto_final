@@ -86,4 +86,4 @@ def test_delete_conta(client, user, token):
         f'/contas/{user.id}',
     )
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'message': 'Conta excluída'}
+    assert response.json() == {'message': 'Conta deletada com sucesso'}
