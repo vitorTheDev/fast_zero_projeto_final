@@ -1,5 +1,6 @@
-import bleach
 import re
+
+import bleach
 
 
 def sanitize_script(text: str):
