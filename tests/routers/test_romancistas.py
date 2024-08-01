@@ -92,3 +92,21 @@ def test_list_romancistas_filtered_other_user_data_should_return_0(
     )
 
     assert len(response.json()['romancistas']) == expected_romancistas
+
+
+def test_patch_romancista_not_found(client, token):
+    response = client.patch(
+        '/romancistas/1',
+        json={},
+    )
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Romancista não consta no MADR'}
+
+
+def test_patch_romancista(client, token, romancista):
+    response = client.patch(
+        f'/romancistas/{romancista.id}',
+        json={'nome': 'teste romancista'},
+    )
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()['nome'] == 'teste romancista'

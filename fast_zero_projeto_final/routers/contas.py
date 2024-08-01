@@ -35,12 +35,12 @@ def create_conta(conta: ContaSchema, session: Session):
         if conta_existente.username == conta.username:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
-                detail='Nome de usuário já existe',
+                detail='Conta já existe no MADR',
             )
         elif conta_existente.email == conta.email:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
-                detail='E-mail já existe',
+                detail='Conta já existe no MADR',
             )
 
     hashed_password = get_password_hash(conta.senha)

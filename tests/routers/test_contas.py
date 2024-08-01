@@ -28,7 +28,7 @@ def test_create_conta_already_exists_username(client, user):
         },
     )
     assert response.status_code == HTTPStatus.BAD_REQUEST
-    assert response.json() == {'detail': 'Nome de usuário já existe'}
+    assert response.json() == {'detail': 'Conta já existe no MADR'}
 
 
 def test_create_conta_already_exists_email(client, user):
@@ -41,7 +41,7 @@ def test_create_conta_already_exists_email(client, user):
         },
     )
     assert response.status_code == HTTPStatus.BAD_REQUEST
-    assert response.json() == {'detail': 'E-mail já existe'}
+    assert response.json() == {'detail': 'Conta já existe no MADR'}
 
 
 def test_update_conta(client, user, token):
