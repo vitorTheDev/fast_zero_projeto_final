@@ -49,8 +49,8 @@ def login_for_access_token(
 
 @router.post('/refresh_token', response_model=Token)
 def refresh_access_token(
-    user: Conta = Depends(get_conta_atual),
+    conta: Conta = Depends(get_conta_atual),
 ):
-    new_access_token = create_access_token(data={'sub': user.email})
+    new_access_token = create_access_token(data={'sub': conta.email})
 
     return {'access_token': new_access_token, 'token_type': 'bearer'}

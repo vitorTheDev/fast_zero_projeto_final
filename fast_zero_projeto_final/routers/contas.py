@@ -19,11 +19,11 @@ from fast_zero_projeto_final.security import (
 router = APIRouter(prefix='/contas', tags=['contas'])
 
 Session = Annotated[Session, Depends(get_session)]
-CurrentUser = Annotated[Conta, Depends(get_conta_atual)]
+CurrentConta = Annotated[Conta, Depends(get_conta_atual)]
 
 
 @router.post('/', status_code=HTTPStatus.CREATED, response_model=ContaPublico)
-def create_user(conta: ContaSchema, session: Session):
+def create_conta(conta: ContaSchema, session: Session):
     conta_existente = session.scalar(
         select(Conta).where(
             (Conta.username == conta.username) | (Conta.email == conta.email)
@@ -52,3 +52,24 @@ def create_user(conta: ContaSchema, session: Session):
     session.refresh(conta_existente)
 
     return conta_existente
+
+
+@router.put('/{conta_id}', response_model=ContaPublico)
+def update_conta(
+    conta_id: int,
+    conta: ContaSchema,
+    session: Session,
+    current_conta: CurrentConta,
+):
+    if current_conta.id != conta_id:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN, detail='Permissões insuficientes'
+        )
+
+    current_conta.username = conta.username
+    current_conta.senha = get_password_hash(conta.senha)
+    current_conta.email = conta.email
+    session.commit()
+    session.refresh(current_conta)
+
+    return current_conta

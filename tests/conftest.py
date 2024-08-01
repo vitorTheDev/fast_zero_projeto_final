@@ -76,7 +76,7 @@ def other_user(session):
 def token(client, user):
     response = client.post(
         '/auth/token',
-        data={'username': user.email, 'senha': user.senha_limpa},
+        data={'username': user.email, 'password': user.senha_limpa},
     )
     token = response.json()['access_token']
     client.headers.update({'Authorization': f'Bearer {token}'})

@@ -42,3 +42,34 @@ def test_create_conta_already_exists_email(client, user):
     )
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'E-mail já existe'}
+
+
+def test_update_conta(client, user, token):
+    response = client.put(
+        f'/contas/{user.id}',
+        json={
+            'username': 'bob',
+            'email': 'bob@example.com',
+            'senha': 'mynewpassword',
+        },
+    )
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'username': 'bob',
+        'email': 'bob@example.com',
+        'id': user.id,
+    }
+
+
+def test_update_conta_with_wrong_user(client, other_user, token):
+    response = client.put(
+        f'/contas/{other_user.id}',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'username': 'bob',
+            'email': 'bob@example.com',
+            'senha': 'mynewpassword',
+        },
+    )
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Permissões insuficientes'}

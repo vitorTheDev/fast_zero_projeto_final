@@ -47,7 +47,7 @@ def test_token_expired_after_time(client, user):
 
     with freeze_time('2023-07-14 12:31:00'):
         response = client.put(
-            f'/users/{user.id}',
+            f'/contas/{user.id}',
             headers={'Authorization': f'Bearer {token}'},
             json={
                 'username': 'wrongwrong',
@@ -65,6 +65,7 @@ def test_refresh_token(client, user, token):
     )
 
     data = response.json()
+    print(data)
 
     assert response.status_code == HTTPStatus.OK
     assert 'access_token' in data
