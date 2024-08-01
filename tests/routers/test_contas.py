@@ -73,3 +73,17 @@ def test_update_conta_with_wrong_user(client, other_user, token):
     )
     assert response.status_code == HTTPStatus.FORBIDDEN
     assert response.json() == {'detail': 'Permissões insuficientes'}
+
+
+def test_delete_conta_not_found(client, token):
+    response = client.delete('/contas/99/')
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Permissões insuficientes'}
+
+
+def test_delete_conta(client, user, token):
+    response = client.delete(
+        f'/contas/{user.id}',
+    )
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'message': 'Conta excluída'}

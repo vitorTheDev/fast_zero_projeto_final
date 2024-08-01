@@ -11,6 +11,7 @@ from fast_zero_projeto_final.schemas.contas import (
     ContaPublico,
     ContaSchema,
 )
+from fast_zero_projeto_final.schemas.mensagem import Mensagem
 from fast_zero_projeto_final.security import (
     get_conta_atual,
     get_password_hash,
@@ -73,3 +74,20 @@ def update_conta(
     session.refresh(current_conta)
 
     return current_conta
+
+
+@router.delete('/{conta_id}', response_model=Mensagem)
+def delete_conta(
+    conta_id: int,
+    session: Session,
+    current_conta: CurrentConta,
+):
+    if current_conta.id != conta_id:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN, detail='Permissões insuficientes'
+        )
+
+    session.delete(current_conta)
+    session.commit()
+
+    return {'message': 'Conta excluída'}
