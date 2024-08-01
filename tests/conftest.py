@@ -1,4 +1,3 @@
-import factory
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -9,8 +8,8 @@ from fast_zero_projeto_final.app import app
 from fast_zero_projeto_final.database import get_session
 from fast_zero_projeto_final.models.contas import Conta
 from fast_zero_projeto_final.models.registry import table_registry
-from fast_zero_projeto_final.models.romancistas import Romancista
 from fast_zero_projeto_final.security import get_password_hash
+from tests.factories import ContaFactory, RomancistaFactory
 
 
 @pytest.fixture(scope='session')
@@ -75,7 +74,18 @@ def other_user(session):
 
 @pytest.fixture
 def romancista(session, user: Conta):
-    entry = Romancista(nome='romancista teste', user_id=user.id)
+    entry = RomancistaFactory(user_id=user.id)
+
+    session.add(entry)
+    session.commit()
+    session.refresh(entry)
+
+    return entry
+
+
+@pytest.fixture
+def other_romancista(session, other_user: Conta):
+    entry = RomancistaFactory(user_id=other_user.id)
 
     session.add(entry)
     session.commit()
@@ -93,12 +103,3 @@ def token(client, user):
     token = response.json()['access_token']
     client.headers.update({'Authorization': f'Bearer {token}'})
     return token
-
-
-class ContaFactory(factory.Factory):
-    class Meta:
-        model = Conta
-
-    username = factory.Sequence(lambda n: f'test{n}')
-    email = factory.LazyAttribute(lambda obj: f'{obj.username}@test.com')
-    senha = factory.LazyAttribute(lambda obj: f'{obj.username}@example.com')
