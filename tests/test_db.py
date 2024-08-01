@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 
 from fast_zero_projeto_final.database import get_session
 from fast_zero_projeto_final.models.contas import Conta
+from fast_zero_projeto_final.models.livros import Livro
+from fast_zero_projeto_final.models.romancistas import Romancista
 
 
 def test_get_session():
@@ -20,3 +22,33 @@ def test_create_conta(session):
 
     assert conta.username == 'alice'
     assert conta.email == 'teste@test'
+
+
+def test_create_romancista(session, user):
+    new_romancista = Romancista(nome='Clarice Lispector', user_id=user.id)
+    session.add(new_romancista)
+    session.commit()
+
+    romancista = session.scalar(
+        select(Romancista).where(Romancista.user_id == user.id)
+    )
+
+    assert romancista.nome == 'Clarice Lispector'
+
+
+def test_create_livro(session, user, romancista: Romancista):
+    new_livro = Livro(
+        titulo='o hobbit',
+        ano=1937,
+        romancista_id=romancista.id,
+        user_id=user.id,
+    )
+    session.add(new_livro)
+    session.commit()
+
+    livro = session.scalar(select(Livro).where(Livro.user_id == user.id))
+
+    assert livro.titulo == 'o hobbit'
+    assert livro.ano == 1937  # noqa
+    assert livro.romancista_id == romancista.id
+    assert livro.user_id == user.id

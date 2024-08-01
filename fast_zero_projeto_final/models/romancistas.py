@@ -1,8 +1,8 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from fast_zero_projeto_final.models.registry import table_registry
 from fast_zero_projeto_final.models.livros import Livro
+from fast_zero_projeto_final.models.registry import table_registry
 
 
 @table_registry.mapped_as_dataclass

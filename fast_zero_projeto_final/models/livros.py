@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from fast_zero_projeto_final.models.registry import table_registry
 
@@ -14,4 +14,3 @@ class Livro:
 
     romancista_id: Mapped[int] = mapped_column(ForeignKey('romancistas.id'))
     user_id: Mapped[int] = mapped_column(ForeignKey('contas.id'))
-
