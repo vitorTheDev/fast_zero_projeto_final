@@ -71,7 +71,7 @@ def test_list_romancistas_filter_nome_should_return_5_romancistas(
 
 
 def test_list_romancistas_other_user_data_should_return_0(
-    session, client, other_romancista, token
+    client, other_romancista, token
 ):
     expected_romancistas = 0
 
@@ -83,7 +83,7 @@ def test_list_romancistas_other_user_data_should_return_0(
 
 
 def test_list_romancistas_filtered_other_user_data_should_return_0(
-    session, client, other_romancista, token
+    client, other_romancista, token
 ):
     expected_romancistas = 0
 
@@ -122,9 +122,7 @@ def test_delete_romancista(client, romancista, token):
 
 
 def test_delete_romancista_not_found(client, token):
-    response = client.delete(
-        f'/romancistas/{10}', headers={'Authorization': f'Bearer {token}'}
-    )
+    response = client.delete('/romancistas/99')
 
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'Romancista não consta no MADR'}
