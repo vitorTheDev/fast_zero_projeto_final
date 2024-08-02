@@ -84,6 +84,17 @@ def romancista(session, user: Conta):
 
 
 @pytest.fixture
+def romancista2(session, user: Conta):
+    entry = RomancistaFactory(conta_id=user.id)
+
+    session.add(entry)
+    session.commit()
+    session.refresh(entry)
+
+    return entry
+
+
+@pytest.fixture
 def other_romancista(session, other_user: Conta):
     entry = RomancistaFactory(conta_id=other_user.id)
 

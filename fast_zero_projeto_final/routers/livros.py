@@ -1,7 +1,8 @@
 from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from fast_zero_projeto_final.database import get_session
@@ -12,6 +13,7 @@ from fast_zero_projeto_final.romancistas.checar_romancista import (
 )
 from fast_zero_projeto_final.sanitize import sanitize_nome
 from fast_zero_projeto_final.schemas.livros import (
+    LivroList,
     LivroPublic,
     LivroSchema,
 )
@@ -43,3 +45,29 @@ def create_livro(
     session.refresh(db_livro)
 
     return db_livro
+
+
+@router.get('/', response_model=LivroList)
+def list_livros(  # noqa
+    session: Session,
+    conta: ContaAtual,
+    titulo: str = Query(None),
+    ano: int = Query(None),
+    romancista_id: int = Query(None),
+    offset: int = Query(None),
+    limit: int = Query(None),
+):
+    query = select(Livro).where(Livro.conta_id == conta.id)
+
+    if titulo:
+        query = query.filter(Livro.titulo.contains(titulo))
+
+    if ano:
+        query = query.filter(Livro.ano == ano)
+
+    if romancista_id:
+        query = query.filter(Livro.romancista_id == romancista_id)
+
+    livros = session.scalars(query.offset(offset).limit(limit)).all()
+
+    return {'livros': livros}

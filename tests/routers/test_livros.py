@@ -16,6 +16,21 @@ def test_create_livro_romancista_not_found(client, token):
     assert response.json() == {'detail': 'Romancista não consta no MADR'}
 
 
+def test_create_livro_romancista_not_found_other_romancista(
+    client, token, other_romancista
+):
+    response = client.post(
+        '/livros/',
+        json={
+            'titulo': 'test livro',
+            'ano': 1970,
+            'romancista_id': other_romancista.id,
+        },
+    )
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Romancista não consta no MADR'}
+
+
 def test_create_livro(client, token, romancista):
     response = client.post(
         '/livros/',
@@ -53,3 +68,166 @@ def test_create_livro_factory(client, token, romancista):
         'ano': livro.ano,
         'romancista_id': romancista.id,
     }
+
+
+def test_list_livros_should_return_5_livros(
+    session, client, user, token, romancista
+):
+    expected_livros = 5
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5,
+            conta_id=user.id,
+            romancista_id=romancista.id,
+        )
+    )
+    session.commit()
+
+    response = client.get(
+        '/livros/',
+    )
+
+    assert len(response.json()['livros']) == expected_livros
+
+
+def test_list_livros_filter_titulo_should_return_5_livros(
+    session, user, client, token, romancista
+):
+    expected_livros = 5
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5,
+            conta_id=user.id,
+            titulo='Blablabla',
+            romancista_id=romancista.id,
+        )
+    )
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5,
+            conta_id=user.id,
+            titulo='test livro 1',
+            romancista_id=romancista.id,
+        )
+    )
+    session.commit()
+
+    response = client.get(
+        '/livros/?titulo=test livro 1',
+    )
+
+    assert len(response.json()['livros']) == expected_livros
+
+
+def test_list_livros_filter_ano_should_return_5_livros(
+    session,
+    user,
+    client,
+    token,
+    romancista,
+):
+    expected_livros = 5
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5,
+            conta_id=user.id,
+            ano=1970,
+            romancista_id=romancista.id,
+        )
+    )
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5,
+            conta_id=user.id,
+            ano=1950,
+            romancista_id=romancista.id,
+        )
+    )
+    session.commit()
+
+    response = client.get(
+        '/livros/?ano=1970',
+    )
+
+    assert len(response.json()['livros']) == expected_livros
+
+
+def test_list_livros_filter_romancista_should_return_5_livros(  # noqa
+    session,
+    user,
+    client,
+    token,
+    romancista,
+    romancista2,
+):
+    expected_livros = 5
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5, conta_id=user.id, romancista_id=romancista.id
+        )
+    )
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5, conta_id=user.id, romancista_id=romancista2.id
+        )
+    )
+    session.commit()
+
+    response = client.get(
+        f'/livros/?romancista_id={romancista.id}',
+    )
+
+    assert len(response.json()['livros']) == expected_livros
+
+
+def test_list_livros_filter_combined_should_return_5_livros(  # noqa
+    session,
+    user,
+    client,
+    token,
+    romancista,
+    romancista2,
+):
+    expected_livros = 5
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5,
+            conta_id=user.id,
+            romancista_id=romancista.id,
+            titulo='test livro 1',
+            ano=1970,
+        )
+    )
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5,
+            conta_id=user.id,
+            romancista_id=romancista2.id,
+            titulo='blabla',
+            ano=1970,
+        )
+    )
+    session.commit()
+
+    response = client.get(
+        f'/livros/?romancista_id={romancista.id}&ano=1970&titulo=test',
+    )
+
+    assert len(response.json()['livros']) == expected_livros
+
+
+def test_list_livros_other_user_livro_should_return_0(
+    client, session, other_user, romancista, token
+):
+    expected_livros = 0
+    session.bulk_save_objects(
+        LivroFactory.create_batch(
+            5, conta_id=other_user.id, romancista_id=romancista.id
+        )
+    )
+
+    response = client.get(
+        '/livros/',
+    )
+
+    assert len(response.json()['livros']) == expected_livros
