@@ -52,3 +52,10 @@ poetry install
 poetry run alembic upgrade head
 poetry poetry run uvicorn --host 0.0.0.0 --port 8000 fast_zero_projeto_final.app:app
 ```
+
+## Desenvolvimento
+
+- Em um terminal, execute `poetry shell`
+- Depois execute `task postgres_up`
+- Em outro termina, execute `poetry shell`
+- Depois execute `task run`
