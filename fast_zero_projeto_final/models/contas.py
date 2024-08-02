@@ -1,11 +1,9 @@
 from datetime import datetime
 
 from sqlalchemy import String, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
-from fast_zero_projeto_final.models.livros import Livro
 from fast_zero_projeto_final.models.registry import table_registry
-from fast_zero_projeto_final.models.romancistas import Romancista
 
 
 @table_registry.mapped_as_dataclass
@@ -21,11 +19,4 @@ class Conta:
     )
     updated_at: Mapped[datetime] = mapped_column(
         init=False, server_default=func.now(), onupdate=func.now()
-    )
-
-    romancistas: Mapped[list['Romancista']] = relationship(
-        init=False, cascade='all, delete-orphan'
-    )
-    livros: Mapped[list['Livro']] = relationship(
-        init=False, cascade='all, delete-orphan'
     )

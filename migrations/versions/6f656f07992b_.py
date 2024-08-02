@@ -1,8 +1,8 @@
-"""reset
+"""empty message
 
-Revision ID: 973b2b0f0c0f
+Revision ID: 6f656f07992b
 Revises: 
-Create Date: 2024-08-01 20:06:20.033623
+Create Date: 2024-08-02 18:07:51.619775
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '973b2b0f0c0f'
+revision: str = '6f656f07992b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -35,7 +35,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('nome', sa.String(length=255), nullable=False),
     sa.Column('conta_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['conta_id'], ['contas.id'], ),
+    sa.ForeignKeyConstraint(['conta_id'], ['contas.id'], onupdate='cascade', ondelete='cascade'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('livros',
@@ -44,8 +44,8 @@ def upgrade() -> None:
     sa.Column('ano', sa.Integer(), nullable=False),
     sa.Column('romancista_id', sa.Integer(), nullable=False),
     sa.Column('conta_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['conta_id'], ['contas.id'], ),
-    sa.ForeignKeyConstraint(['romancista_id'], ['romancistas.id'], ),
+    sa.ForeignKeyConstraint(['conta_id'], ['contas.id'], onupdate='cascade', ondelete='cascade'),
+    sa.ForeignKeyConstraint(['romancista_id'], ['romancistas.id'], onupdate='cascade', ondelete='cascade'),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

@@ -12,5 +12,9 @@ class Livro:
     titulo: Mapped[str] = mapped_column(String(500))
     ano: Mapped[int]
 
-    romancista_id: Mapped[int] = mapped_column(ForeignKey('romancistas.id'))
-    conta_id: Mapped[int] = mapped_column(ForeignKey('contas.id'))
+    romancista_id: Mapped[int] = mapped_column(
+        ForeignKey('romancistas.id', ondelete='cascade', onupdate='cascade')
+    )
+    conta_id: Mapped[int] = mapped_column(
+        ForeignKey('contas.id', ondelete='cascade', onupdate='cascade')
+    )
