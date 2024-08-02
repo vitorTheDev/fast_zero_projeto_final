@@ -6,25 +6,6 @@ Projeto final do curso Fast Api do Zero do Dunossauro [link do curso](https://fa
 
 O projeto se chama MADR (Meu Acervo Digital de Romances). No projeto cada usuário possui uma conta (protegida pro e-mail/senha). Depois que está "dentro" da conta (ou seja, authenticado com um JWT), o usuário pode criar/ler/atualizar/excluir romancistas e livros que queira guardar no acervo.
 
-## Instalação
-
-### Com docker
-
-```
-docker-compose up
-```
-
-### Sem docker
-
-Primeiro instale o PostgreSQL 16 na porta 5432. Depois instale o python 3.12. Com o python 3.12 instalado, execute os comandos:
-```sh
-pip install pipx
-pipx install poetry
-poetry install
-poetry run alembic upgrade head
-poetry poetry run uvicorn --host 0.0.0.0 --port 8000 fast_zero_projeto_final.app:app
-```
-
 ## Ferramentas Utilizadas
 
 - Linguagem de programação: Python 3.12
@@ -51,3 +32,23 @@ poetry poetry run uvicorn --host 0.0.0.0 --port 8000 fast_zero_projeto_final.app
 - ruff: linter, formatador e mais
 - freezegun: viagem no tempo para testes
 - testcontainers: gerenciar containers durante os testes
+
+## Instalação
+
+### Com docker
+
+```sh
+docker-compose up
+```
+
+### Sem docker
+
+Primeiro instale o PostgreSQL 16 na porta 5432. Depois instale o python 3.12. Com o python 3.12 instalado, execute os comandos:
+
+```sh
+pip install pipx
+pipx install poetry
+poetry install
+poetry run alembic upgrade head
+poetry poetry run uvicorn --host 0.0.0.0 --port 8000 fast_zero_projeto_final.app:app
+```
