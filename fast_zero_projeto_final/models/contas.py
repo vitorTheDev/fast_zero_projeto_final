@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import func, String
+from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from fast_zero_projeto_final.models.livros import Livro
