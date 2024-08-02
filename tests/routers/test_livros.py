@@ -231,3 +231,65 @@ def test_list_livros_other_user_livro_should_return_0(
     )
 
     assert len(response.json()['livros']) == expected_livros
+
+
+def test_patch_livro_not_found(client, token):
+    response = client.patch(
+        '/livros/1',
+        json={},
+    )
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Livro não consta no MADR'}
+
+
+def test_patch_livro_romancista_not_found(
+    client, user, token, session, romancista
+):
+    livro = LivroFactory(conta_id=user.id, romancista_id=romancista.id)
+    session.add(livro)
+    session.commit()
+    session.refresh(livro)
+    response = client.patch(
+        f'/livros/{livro.id}',
+        json={
+            'romancista_id': 99,
+        },
+    )
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Romancista não consta no MADR'}
+
+
+def test_patch_livro_other_romancista_not_found(
+    client, user, session, token, other_romancista
+):
+    livro = LivroFactory(conta_id=user.id, romancista_id=other_romancista.id)
+    session.add(livro)
+    session.commit()
+    session.refresh(livro)
+    response = client.patch(
+        f'/livros/{livro.id}',
+        json={
+            'romancista_id': other_romancista.id,
+        },
+    )
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Romancista não consta no MADR'}
+
+
+def test_patch_livro(client, user, session, token, romancista, romancista2):  # noqa
+    livro = LivroFactory(conta_id=user.id, romancista_id=romancista.id)
+    session.add(livro)
+    session.commit()
+    session.refresh(livro)
+    response = client.patch(
+        f'/livros/{livro.id}',
+        json={
+            'titulo': 'TESTE LivrO!!<script>!!</script>',
+            'romancista_id': romancista2.id,
+            'ano': 1970,
+        },
+    )
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()['titulo'] == 'teste livro'
+    assert response.json()['romancista_id'] == romancista2.id
+    assert response.json()['ano'] == 1970  # noqa

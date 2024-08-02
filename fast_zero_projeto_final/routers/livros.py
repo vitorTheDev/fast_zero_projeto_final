@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -16,6 +16,7 @@ from fast_zero_projeto_final.schemas.livros import (
     LivroList,
     LivroPublic,
     LivroSchema,
+    LivroUpdate,
 )
 from fast_zero_projeto_final.security import get_conta_atual
 
@@ -71,3 +72,36 @@ def list_livros(  # noqa
     livros = session.scalars(query.offset(offset).limit(limit)).all()
 
     return {'livros': livros}
+
+
+@router.patch('/{livro_id}', response_model=LivroPublic)
+def patch_livro(
+    livro_id: int,
+    session: Session,
+    conta: ContaAtual,
+    livro: LivroUpdate,
+):
+    livro_existente = session.scalar(
+        select(Livro).where(
+            (Livro.conta_id == conta.id) | (Livro.id == livro_id)
+        )
+    )
+
+    if not livro_existente:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Livro não consta no MADR',
+        )
+
+    checarRomancista(session, conta, livro.romancista_id)
+    for key, value in livro.model_dump(exclude_unset=True).items():
+        if key == 'titulo':
+            setattr(livro_existente, key, sanitize_nome(value))
+        else:
+            setattr(livro_existente, key, value)
+
+    session.add(livro_existente)
+    session.commit()
+    session.refresh(livro_existente)
+
+    return livro_existente

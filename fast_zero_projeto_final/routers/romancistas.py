@@ -73,16 +73,16 @@ def patch_romancista(
     conta: ContaAtual,
     romancista: RomancistaUpdate,
 ):
-    db_romancista = checarRomancista(session, conta, romancista_id)
+    romancista_existente = checarRomancista(session, conta, romancista_id)
 
     for key, value in romancista.model_dump(exclude_unset=True).items():
-        setattr(db_romancista, key, value)
+        setattr(romancista_existente, key, value)
 
-    session.add(db_romancista)
+    session.add(romancista_existente)
     session.commit()
-    session.refresh(db_romancista)
+    session.refresh(romancista_existente)
 
-    return db_romancista
+    return romancista_existente
 
 
 @router.delete('/{romancista_id}', response_model=Mensagem)
