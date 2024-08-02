@@ -1,10 +1,13 @@
+import pytest
 from sqlalchemy import select
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import Session
 
 from fast_zero_projeto_final.database import get_session
 from fast_zero_projeto_final.models.contas import Conta
 from fast_zero_projeto_final.models.livros import Livro
 from fast_zero_projeto_final.models.romancistas import Romancista
+from tests.factories import LivroFactory
 
 
 def test_get_session():
@@ -52,3 +55,20 @@ def test_create_livro(session, user, romancista: Romancista):
     assert livro.ano == 1937  # noqa
     assert livro.romancista_id == romancista.id
     assert livro.conta_id == user.id
+
+
+def test_cascade_delete_romancista(session, user, romancista: Romancista):
+    session.delete(user)
+    pytest.raises(InvalidRequestError, lambda: session.refresh(romancista))
+
+
+def test_cascade_delete_livro(session, user, romancista: Romancista):
+    livro = LivroFactory(romancista_id=romancista.id, conta_id=user.id)
+    session.delete(user)
+    pytest.raises(InvalidRequestError, lambda: session.refresh(livro))
+
+
+def test_cascade_romancista_livro(session, user, romancista: Romancista):
+    livro = LivroFactory(romancista_id=romancista.id, conta_id=user.id)
+    session.delete(romancista)
+    pytest.raises(InvalidRequestError, lambda: session.refresh(livro))

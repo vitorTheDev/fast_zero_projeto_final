@@ -6,6 +6,8 @@ Projeto final do curso Fast Api do Zero do Dunossauro [link do curso](https://fa
 
 O projeto se chama MADR (Meu Acervo Digital de Romances). No projeto cada usuário possui uma **conta** (protegida pro e-mail/senha). Depois que está "dentro" da conta (ou seja, authenticado com um JWT), o usuário pode criar/ler/atualizar/excluir **romancistas** e **livros** que queira guardar no acervo. Diferentemente do que foi proposto no curso, cada usuário possui um acervo pessoal, somente acessível por sua conta.
 
+Outra diferença é que os models foram separados em arquivos na pasta `models/` para testar se isso é proveitoso ou não. É possível fazer e facilita a organização, mas causa problemas de referencia circular nas `relationship`.
+
 ## Ferramentas Utilizadas
 
 - Linguagem de programação: Python 3.12
