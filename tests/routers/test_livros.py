@@ -1,5 +1,8 @@
 from http import HTTPStatus
 
+import pytest
+from sqlalchemy.exc import InvalidRequestError
+
 from tests.factories import LivroFactory
 
 
@@ -284,7 +287,7 @@ def test_patch_livro(client, user, session, token, romancista, romancista2):  # 
     response = client.patch(
         f'/livros/{livro.id}',
         json={
-            'titulo': 'TESTE LivrO!!<script>!!</script>',
+            'titulo': 'teste livro',
             'romancista_id': romancista2.id,
             'ano': 1970,
         },
@@ -293,3 +296,45 @@ def test_patch_livro(client, user, session, token, romancista, romancista2):  # 
     assert response.json()['titulo'] == 'teste livro'
     assert response.json()['romancista_id'] == romancista2.id
     assert response.json()['ano'] == 1970  # noqa
+
+
+def test_patch_livro_sanitized(  # noqa
+    client, user, session, token, romancista, romancista2
+):
+    livro = LivroFactory(conta_id=user.id, romancista_id=romancista.id)
+    session.add(livro)
+    session.commit()
+    session.refresh(livro)
+    response = client.patch(
+        f'/livros/{livro.id}',
+        json={
+            'titulo': "TESTE LivrO!!<script>alert('xss')</script>",
+            'romancista_id': romancista2.id,
+            'ano': 1970,
+        },
+    )
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()['titulo'] == 'teste livroalertxss'
+    assert response.json()['romancista_id'] == romancista2.id
+    assert response.json()['ano'] == 1970  # noqa
+
+
+def test_delete_livro(client, session, user, romancista, token):
+    livro = LivroFactory(conta_id=user.id, romancista_id=romancista.id)
+    session.add(livro)
+    session.commit()
+    session.refresh(livro)
+    response = client.delete(
+        f'/livros/{livro.id}',
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'message': 'Livro deletado no MADR'}
+    pytest.raises(InvalidRequestError, lambda: session.refresh(livro))
+
+
+def test_delete_livro_not_found(client, token):
+    response = client.delete('/livros/99')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Livro não consta no MADR'}

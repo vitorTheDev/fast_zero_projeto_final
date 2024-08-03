@@ -18,6 +18,7 @@ from fast_zero_projeto_final.schemas.livros import (
     LivroSchema,
     LivroUpdate,
 )
+from fast_zero_projeto_final.schemas.mensagem import Mensagem
 from fast_zero_projeto_final.security import get_conta_atual
 
 router = APIRouter()
@@ -105,3 +106,23 @@ def patch_livro(
     session.refresh(livro_existente)
 
     return livro_existente
+
+
+@router.delete('/{livro_id}', response_model=Mensagem)
+def delete_livro(livro_id: int, session: Session, conta: ContaAtual):
+    livro_existente = session.scalar(
+        select(Livro).where(
+            (Livro.conta_id == conta.id) | (Livro.id == livro_id)
+        )
+    )
+
+    if not livro_existente:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Livro não consta no MADR',
+        )
+
+    session.delete(livro_existente)
+    session.commit()
+
+    return {'message': 'Livro deletado no MADR'}

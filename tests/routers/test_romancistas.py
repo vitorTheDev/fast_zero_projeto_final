@@ -1,5 +1,8 @@
 from http import HTTPStatus
 
+import pytest
+from sqlalchemy.exc import InvalidRequestError
+
 from tests.factories import RomancistaFactory
 
 
@@ -112,13 +115,14 @@ def test_patch_romancista(client, token, romancista):
     assert response.json()['nome'] == 'teste romancista'
 
 
-def test_delete_romancista(client, romancista, token):
+def test_delete_romancista(client, romancista, session, token):
     response = client.delete(
         f'/romancistas/{romancista.id}',
     )
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'message': 'Livro deletado no MADR'}
+    pytest.raises(InvalidRequestError, lambda: session.refresh(romancista))
 
 
 def test_delete_romancista_not_found(client, token):
