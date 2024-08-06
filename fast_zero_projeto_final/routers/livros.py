@@ -115,7 +115,8 @@ def patch_livro(
             detail='Livro não consta no MADR',
         )
 
-    checarRomancista(session, conta, livro.romancista_id)
+    if livro.romancista_id:
+        checarRomancista(session, conta, livro.romancista_id)
     for key, value in livro.model_dump(exclude_unset=True).items():
         if key == 'titulo':
             setattr(livro_existente, key, sanitize_nome(value))
