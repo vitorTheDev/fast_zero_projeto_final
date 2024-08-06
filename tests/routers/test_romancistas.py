@@ -100,7 +100,7 @@ def test_list_romancistas_filtered_other_user_data_should_return_0(
 
 def test_read_romancistas(client, token, romancista):
     romancista_schema = RomancistaPublic.model_validate(
-        romancista
+        romancista.__dict__
     ).model_dump()
     response = client.get(f'/romancistas/{romancista.id}')
     assert response.status_code == HTTPStatus.OK

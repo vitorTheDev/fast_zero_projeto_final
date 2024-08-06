@@ -75,6 +75,27 @@ def list_livros(  # noqa
     return {'livros': livros}
 
 
+@router.get('/{livro_id}', response_model=LivroPublic)
+def read_livro(
+    livro_id: int,
+    session: Session,
+    conta: ContaAtual,
+):
+    livro_existente = session.scalar(
+        select(Livro).where(
+            (Livro.conta_id == conta.id) | (Livro.id == livro_id)
+        )
+    )
+
+    if not livro_existente:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Livro não consta no MADR',
+        )
+
+    return livro_existente
+
+
 @router.patch('/{livro_id}', response_model=LivroPublic)
 def patch_livro(
     livro_id: int,

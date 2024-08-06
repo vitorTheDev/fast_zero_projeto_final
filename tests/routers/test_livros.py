@@ -3,6 +3,8 @@ from http import HTTPStatus
 import pytest
 from sqlalchemy.exc import InvalidRequestError
 
+from fast_zero_projeto_final.models.livros import Livro
+from fast_zero_projeto_final.schemas.livros import LivroPublic
 from tests.factories import LivroFactory
 
 
@@ -234,6 +236,23 @@ def test_list_livros_other_user_livro_should_return_0(
     )
 
     assert len(response.json()['livros']) == expected_livros
+
+
+def test_read_livros(client, session, user, token, romancista):
+    livro: Livro = LivroFactory(conta_id=user.id, romancista_id=romancista.id)
+    session.add(livro)
+    session.commit()
+    session.refresh(livro)
+    livro_schema = LivroPublic.model_validate(livro.__dict__).model_dump()
+    response = client.get(f'/livros/{livro.id}')
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == livro_schema
+
+
+def test_read_livro_not_found(client, token):
+    response = client.get('/livros/1')
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Livro não consta no MADR'}
 
 
 def test_patch_livro_not_found(client, token):
