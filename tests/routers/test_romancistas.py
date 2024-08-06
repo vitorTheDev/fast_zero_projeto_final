@@ -3,6 +3,7 @@ from http import HTTPStatus
 import pytest
 from sqlalchemy.exc import InvalidRequestError
 
+from fast_zero_projeto_final.schemas.romancistas import RomancistaPublic
 from tests.factories import RomancistaFactory
 
 
@@ -95,6 +96,21 @@ def test_list_romancistas_filtered_other_user_data_should_return_0(
     )
 
     assert len(response.json()['romancistas']) == expected_romancistas
+
+
+def test_read_romancistas(client, token, romancista):
+    romancista_schema = RomancistaPublic.model_validate(
+        romancista
+    ).model_dump()
+    response = client.get(f'/romancistas/{romancista.id}')
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == romancista_schema
+
+
+def test_read_romancista_not_found(client, token):
+    response = client.get('/romancistas/1')
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Romancista não consta no MADR'}
 
 
 def test_patch_romancista_not_found(client, token):

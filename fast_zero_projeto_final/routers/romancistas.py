@@ -66,6 +66,17 @@ def list_romancistas(  # noqa
     return {'romancistas': romancistas}
 
 
+@router.get('/{romancista_id}', response_model=RomancistaPublic)
+def read_romancista(
+    romancista_id: int,
+    session: Session,
+    conta: ContaAtual,
+):
+    romancista_existente = checarRomancista(session, conta, romancista_id)
+
+    return romancista_existente
+
+
 @router.patch('/{romancista_id}', response_model=RomancistaPublic)
 def patch_romancista(
     romancista_id: int,
