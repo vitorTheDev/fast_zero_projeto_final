@@ -103,4 +103,4 @@ def delete_romancista(romancista_id: int, session: Session, conta: ContaAtual):
     session.delete(romancista)
     session.commit()
 
-    return {'message': 'Livro deletado no MADR'}
+    return {'message': 'Romancista deletado no MADR'}

@@ -137,7 +137,7 @@ def test_delete_romancista(client, romancista, session, token):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'message': 'Livro deletado no MADR'}
+    assert response.json() == {'message': 'Romancista deletado no MADR'}
     pytest.raises(InvalidRequestError, lambda: session.refresh(romancista))
 
 
