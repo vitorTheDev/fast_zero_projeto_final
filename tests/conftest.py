@@ -73,6 +73,33 @@ def other_user(session):
 
 
 @pytest.fixture
+def cenario_user(client):
+    response = client.post(
+        '/contas/',
+        json={
+            'username': 'dunossauro',
+            'email': 'dudu@dudu.com',
+            'senha': '123456',
+        },
+    )
+    json = response.json()
+    json['senha_limpa'] = '123456'
+    return json
+
+
+@pytest.fixture
+def cenario_romancista(
+    client: TestClient,
+    cenario_token,
+):
+    response = client.post(
+        '/romancistas/',
+        json={'nome': 'Clarice Lispector'},
+    )
+    return response.json()
+
+
+@pytest.fixture
 def romancista(session, user: Conta):
     entry = RomancistaFactory(conta_id=user.id)
 
@@ -110,6 +137,20 @@ def token(client, user):
     response = client.post(
         '/auth/token',
         data={'username': user.email, 'password': user.senha_limpa},
+    )
+    token = response.json()['access_token']
+    client.headers.update({'Authorization': f'Bearer {token}'})
+    return token
+
+
+@pytest.fixture
+def cenario_token(client, cenario_user):
+    response = client.post(
+        '/auth/token',
+        data={
+            'username': cenario_user['email'],
+            'password': cenario_user['senha_limpa'],
+        },
     )
     token = response.json()['access_token']
     client.headers.update({'Authorization': f'Bearer {token}'})
